@@ -1,40 +1,71 @@
 <html>
     <head>
       <style>
+          .listItem {
+              border: solid black 1px;
+          }
+          ul {
+              list-style: none;
+          }
+          #container {
+              display: flex;
+              flex-direction: column;
+          }
+
+
         </style>
     </head>
     <body>
-        <div>
-            <ul id="list"></ul>
-            <ul id="details"></ul>
+
+        <div id="container">
+        
         </div>
 
         <script>
-            const list = document.querySelector("#list")
+            const firstNames = document.querySelector("#firstName");
+            const lastNames = document.querySelector("#lastName");
+            const emails = document.querySelector("#email");
+            const titles = document.querySelector("#title");
+            const container = document.querySelector("#container");
 
             const loadData = async() => {
                 const response = await fetch('https://acme-users-api-rev.herokuapp.com/api/users');
                 const users = await response.json(); 
-                console.log(users)
                 const realUsers = users.users
-                const html = realUsers.map(user =>   `
-                    <li><a href="#${user.id}">${user.fullName}</a></li>`).join('');
-                    list.innerHTML = html;
+                const fName = realUsers.map(user =>   `
+                    <div class="listItem"><a href="#${user.id}">${user.firstName}</a></div>
+                    <div class="listItem"><a href="#${user.id}">${user.lastName}</a></div>
+                    <div class="listItem"><a href="#${user.id}">${user.email}</a></div>
+                    <div class="listItem"><a href="#${user.id}">${user.title}</a></div>`).join('');
+                    
+                    container.innerHTML = `${fName}`;
+                // const lName = realUsers.map(user =>   `
+                //     <li class="listItem"><a href="#${user.id}">${user.lastName}</a></li>`).join('');
+                //     lastNames.innerHTML = lName;
+                // const em = realUsers.map(user =>   `
+                //     <li class="listItem"><a href="#${user.id}">${user.email}</a></li>`).join('');
+                //     emails.innerHTML = em;
+                // const ti = realUsers.map(user =>   `
+                //     <li class="listItem"><a href="#${user.id}">${user.title}</a></li>`).join('');
+                //     titles.innerHTML = ti;
             }
 
             const loadHash = async(id) => {
                 //console.log(typeof id)
-                const response = await fetch(`https://acme-users-api-rev.herokuapp.com/api/users/${id}`)
+                const response = await fetch(`https://acme-users-api-rev.herokuapp.com/api/users/detail/${id}`)
                 const result = await response.json();
+                console.log(id)
             }
+
+
             
-            loadData();
 
             window.addEventListener('hashchange', (ev) => {
-                const id = window.location.hash;
-                console.log(id)
+                const id = window.location.hash.slice(1);
                 loadHash(id);
             })
+
+            loadData();
 
            
             
